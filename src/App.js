@@ -63,7 +63,7 @@ class App extends Component {
           nextIndex= result.val().length
           db.ref("complaints/"+nextIndex.toString()).set(Payload).then(
             res=>{
-              storage.child(nextIndex+this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath).then(result=>{
+              storage.child(nextIndex+"."+this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath).then(result=>{
                 alert("Sumbitted Successfully")
               }).catch(err=>alert(err))
             }
@@ -104,7 +104,6 @@ class App extends Component {
     <i className="material-icons right">send</i>
   </button>
 </form>
-<button onClick={this.onSubmitForm}>aaaa</button>
 
 
       <div className="divider"></div>
