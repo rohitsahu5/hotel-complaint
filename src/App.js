@@ -104,7 +104,7 @@ class App extends Component {
     <i className="material-icons right">send</i>
   </button>
 </form>
-<button onClick={this.onSubmitForm}>aaaa</button>
+
 
 
       <div className="divider"></div>
