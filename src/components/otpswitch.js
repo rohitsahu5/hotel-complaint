@@ -10,7 +10,7 @@ export class OtpSwitch extends React.Component {
             BtnDisbled: true,
             Error: false,
             number: 0,
-            DisableVerify: false
+            DisableVerify: true
         }
         firebase.auth().languageCode = 'en';
     }
@@ -18,7 +18,7 @@ export class OtpSwitch extends React.Component {
 
         if (e.target.value.toString().length === 6)
             this.setState({
-                DisableVerify: true
+                DisableVerify: false
             })
         this.setState({
             otp: e.target.value
@@ -50,7 +50,7 @@ export class OtpSwitch extends React.Component {
         if (this.state.optVerified) {
             Markup = (<div className="input-field row">
 
-                <h3 className="Blue-text"> <i className="material-icons">check</i> Verified</h3>
+                <h5 className="center green-text"> <i className="material-icons">check</i> Verified</h5>
             </div>)
         }
 
@@ -114,8 +114,8 @@ export class OtpSwitch extends React.Component {
 
     render() {
         var Markup = (<div><div className="switch row" style={{ margin: "15px 0" }}>
-            <label className="blue-text col sm10" style={{ fontSize: "14px", margin: "15px 0" }}>{this.props.title}</label>
-            <label className="col sm2">
+            <label className="blue-text col sm7" style={{ fontSize: "14px", margin: "15px 0" }}>{this.props.title}</label>
+            <label className="col sm5">
                 <div style={{ height: "15px" }}></div>
                 <input onChange={this.onSwitch} type="checkbox" />
                 <span className="lever"></span>

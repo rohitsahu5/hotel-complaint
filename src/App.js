@@ -66,15 +66,18 @@ class App extends Component {
 
       var nextIndex;
       db.ref("complaints/").once("value").then(result => {
-        nextIndex = result.val().length
-        db.ref("complaints/" + nextIndex.toString()).set(Payload).then(
-          res => {
-            storage.child(nextIndex + this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath).then(result => {
-              Materialize.toast({ html: 'Submitted Sucessfully ', classes: 'green', completeCallback: this.RefeshPage })
-            }).catch(err => { Materialize.toast({ html: "An Error Occured During Submission", classes: "red" }) })
-          }
-        ).catch(err => { Materialize.toast({ html: "An Error Occured During Submission", classes: "red" }) })
-      }).catch(err => { Materialize.toast({ html: "An Error Occured During Submission", classes: "red" }) })
+        nextIndex = Object.keys(result.val()).length + 1
+        db.ref("complaints/" + nextIndex.toString()).set(Payload)
+      }).then(
+        res => {
+          storage.child(nextIndex + this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath)
+        }
+      ).then(result => {
+        Materialize.toast({ html: 'Submitted Sucessfully ', classes: 'green', completeCallback: this.RefeshPage })
+      }).catch(err => {
+        console.log(err)
+        Materialize.toast({ html: "An Error Occured During Submission", classes: "red" })
+      })
 
 
     }
