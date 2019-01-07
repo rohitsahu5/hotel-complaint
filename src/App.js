@@ -11,6 +11,7 @@ import { OtpSwitch } from "./components/otpswitch"
 import Materialize from 'materialize-css';
 
 import "./App.css"
+import { promised } from "q";
 
 class App extends Component {
   constructor() {
@@ -24,6 +25,7 @@ class App extends Component {
 
   }
   stateChanger = (key, value) => {
+
     this.setState({
       [key]: value
     })
@@ -32,6 +34,7 @@ class App extends Component {
     window.location.reload()
   }
   onSubmitForm = (e) => {
+
 
     e.preventDefault();
     if (this.state["error_on_First Name"]) {
@@ -45,7 +48,7 @@ class App extends Component {
     else if (typeof this.state.ComplaintTopic == "undefined" || this.state.ComplaintTopic.length === 0) {
       Materialize.toast({ html: 'please select A complaint topic', classes: "red" })
     }
-    else if (typeof this.state.likings == "undefined" || this.state.likings.length === 0) {
+    if (typeof this.state.likings == "undefined" || this.state.likings.length === 0) {
       this.setState({ likings: [] })
     }
 
@@ -67,10 +70,12 @@ class App extends Component {
       var nextIndex;
       db.ref("complaints/").once("value").then(result => {
         nextIndex = Object.keys(result.val()).length + 1
-        db.ref("complaints/" + nextIndex.toString()).set(Payload)
+
+        return db.ref("complaints/" + nextIndex.toString()).set(Payload)
       }).then(
         res => {
-          storage.child(nextIndex + this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath)
+
+          return storage.child(nextIndex + "." + this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath)
         }
       ).then(result => {
         Materialize.toast({ html: 'Submitted Sucessfully ', classes: 'green', completeCallback: this.RefeshPage })

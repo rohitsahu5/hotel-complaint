@@ -3,8 +3,38 @@ import Materialize from 'materialize-css';
 
 
 export class Dates extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            minDateStart: ""
+            , startDate: "",
+            minDateEnd: "",
+            today: new Date(),
+            dayaftertoday: new Date().setDate(new Date().getDate() + 1)
+        }
 
+    }
+    setDateConstraints = () => {
+        this.setState({
+            minDateStart: this.dateConverter(this.state.today),
+            minDateEnd: this.dateConverter(this.state.dayaftertoday)
+        })
+    }
+    dateConverter = (indate) => {
+        var dtToday = new Date(indate);
 
+        var month = dtToday.getMonth() + 1;
+        var day = dtToday.getDate();
+        var year = dtToday.getFullYear();
+
+        if (month < 10)
+            month = '0' + month.toString();
+        if (day < 10)
+            day = '0' + day.toString();
+
+        var maxDate = year + '-' + month + '-' + day;
+        return maxDate
+    }
     render() {
 
         var toDateString = (inputObj) => {
@@ -34,12 +64,14 @@ export class Dates extends React.Component {
             var elem2 = document.querySelectorAll('.datepicker#EndDate');
 
             Materialize.Datepicker.init(elem1, {
-                onSelect: onSelectStart
+                onSelect: onSelectStart,
+                minDate: new Date()
             });
 
 
             Materialize.Datepicker.init(elem2, {
-                onSelect: onSelectEnd
+                onSelect: onSelectEnd,
+                minDate: new Date()
             });
         });
         return (
@@ -47,5 +79,7 @@ export class Dates extends React.Component {
 
         )
     }
-
+    componentDidMount() {
+        this.setDateConstraints(new Date())
+    }
 }
