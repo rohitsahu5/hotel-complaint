@@ -9,20 +9,19 @@ import { TextArea } from "./components/textarea";
 import { ImgUpload } from "./components/imgupload"
 import { OtpSwitch } from "./components/otpswitch"
 import Materialize from 'materialize-css';
-
 import "./App.css"
-import { promised } from "q";
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
-      DisableSubmit: false
+      progress: "0%",
+      DisableSubmit: false,
+      sending: false
     }
     Materialize.validate_field = function (object) {
       //do nothing
     }
-
   }
   stateChanger = (key, value) => {
 
@@ -34,7 +33,6 @@ class App extends Component {
     window.location.reload()
   }
   onSubmitForm = (e) => {
-
 
     e.preventDefault();
     if (this.state["error_on_First Name"]) {
@@ -53,6 +51,8 @@ class App extends Component {
     }
 
     else {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+      this.setState({ sending: true, progress: "10%" })
       Materialize.toast({ html: 'Submitting Form' })
       var Payload = {
         name: this.state.FirstName + " " + this.state.LastName,
@@ -62,38 +62,63 @@ class App extends Component {
         Likings: this.state.likings,
         ComplaintTopic: this.state.ComplaintTopic,
         Details: this.state.Details,
+        imgExt: this.state.ImgPath.name.split('.').pop()
       };
+      this.setState({ progress: "30%" })
       if (typeof this.state.PhoneNumber != "undefined" && this.state.PhoneNumber.toString().length === 10) {
         Payload["PhoneNumber"] = "+91" + this.state.PhoneNumber.toString();
       }
-
-      var nextIndex;
-      db.ref("complaints/").once("value").then(result => {
-        nextIndex = Object.keys(result.val()).length + 1
-
-        return db.ref("complaints/" + nextIndex.toString()).set(Payload)
-      }).then(
+      var newRef = db.ref("complaints").push()
+      newRef.set(Payload).then(
         res => {
-
-          return storage.child(nextIndex + "." + this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath)
+          this.setState({ progress: "60%" })
+          return storage.child(newRef.key + "." + this.state.ImgPath.name.split('.').pop()).put(this.state.ImgPath)
         }
-      ).then(result => {
-        Materialize.toast({ html: 'Submitted Sucessfully ', classes: 'green', completeCallback: this.RefeshPage })
-      }).catch(err => {
-        console.log(err)
-        Materialize.toast({ html: "An Error Occured During Submission", classes: "red" })
+      ).then(() => {
+        this.setState({ progress: "80%" })
+        return db.ref("Total").transaction(
+          (total) => {
+            return total + 1;
+          }
+        )
       })
+        .then(() => {
+          this.setState({ sending: false, progress: "100%" })
+          Materialize.toast({ html: 'Submitted Sucessfully ', classes: 'green', completeCallback: this.RefeshPage })
+        })
+
+        .catch(err => {
+          this.setState({ sending: false })
+          console.log(err)
+          Materialize.toast({ html: "An Error Occured During Submission", classes: "red" })
+        })
 
 
     }
 
   }
+  renderMat = () => {
+    if (this.state.sending) {
+      return <div className="mat" ></div>
+    }
+    else return (<div />)
+  }
+  renderLoader = () => {
+    if (this.state.sending)
+      return (<div style={{ margin: "0px 0", position: "fixed", width: "100%", zIndex: "6" }} >
 
+        <div className="progress">
+          <div className="determinate" style={{ width: this.state.progress }}></div>
+        </div>
+      </div>)
+  }
   render() {
     return (
       <div className="App">
         <div className="row">
+          {this.renderLoader()}
           <div className="card col s10 l4 m6  offset-s1 offset-l4  offset-m3">
+            {this.renderMat()}
             <div className="card-content">
               <span className="card-title blue-text">Submit Complaint</span>
               <form onSubmit={this.onSubmitForm}>

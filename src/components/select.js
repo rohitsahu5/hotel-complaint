@@ -21,11 +21,11 @@ export class Select extends React.Component {
       <div style={{ height: "15px" }}></div>
       <select onChange={this.handlChange} multiple >
 
-        <option value="Staff">Staff</option>
-        <option value="Cleanliness">Cleanliness</option>
-        <option value="Food">Food</option>
-        <option value="Room Service">Room Service</option>
-        <option value="Other">Other</option>
+        <option value="Staff ">Staff</option>
+        <option value="Cleanliness ">Cleanliness</option>
+        <option value="Food ">Food</option>
+        <option value="Room Service ">Room Service</option>
+        <option value="Other ">Other</option>
       </select></div>)
 
 

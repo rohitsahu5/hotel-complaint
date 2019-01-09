@@ -18,10 +18,10 @@ export class Chips extends React.Component {
                 filter
                 handleSelect={this.sendSelectedChips}
             >
-                <Chip id={'FriendlyStaff'} label='Friendly Staff' />
-                <Chip id={'Clienliness'} label='Clienliness' />
-                <Chip id={'Location'} label='Location' />
-                <Chip id={'Food'} label='Food' />
+                <Chip id={'Friendly Staff '} label='Friendly Staff ' />
+                <Chip id={'Clienliness '} label='Clienliness ' />
+                <Chip id={'Location '} label='Location ' />
+                <Chip id={'Food '} label='Food ' />
 
             </ChipSet></div>)
         return (Markup)
